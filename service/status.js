@@ -6,16 +6,18 @@ const router = express.Router();
 var statusImpl = require('../serviceImpl/statusImpl.js');
 
 var ioc = require('socket.io-client');
-var socketc = ioc.connect('http://localhost:4200', {reconnect: true});
+var socketc = ioc.connect('localhost:8084', {reconnect: true});
 
 router
     /**
      * Verify router is life
      */
     .get('/', async function(req, res) {
+        console.log('upao')
         var token = req.body.token || req.query.token || req.headers['authorization'];
         var decoded = jwt.decode(token, 'XWSMeanDevelopment');
         var user = await statusImpl.getAllOnlineById(decoded._id);
+        socketc.emit('notify-show-messages', {users: user, client: decoded._id});
         return res.status(200).send({message: user})
     })
     .get('/logout', function(req, res) {
