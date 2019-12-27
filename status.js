@@ -32,9 +32,11 @@ io.on('connection', function (socket) {
     socket.on('getOnline', function () {
         StatusImpl.getAllOnline();
     });
-    // socket.on('publication', function (data) {
-    //     SyncImpl.publication(data);
-    // });
+    socket.on('typing', function (data) {
+        for (let i = 0; i < data.length; i++) {
+            io.emit('typing-' + data[i]._id, true);
+        }
+    });
 });
 
 app.set('socket-io', io);
