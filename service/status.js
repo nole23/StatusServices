@@ -13,12 +13,11 @@ router
      * Verify router is life
      */
     .get('/', async function(req, res) {
-        console.log('upao')
-        var token = req.body.token || req.query.token || req.headers['authorization'];
-        var decoded = jwt.decode(token, 'XWSMeanDevelopment');
-        var user = await statusImpl.getAllOnlineById(decoded._id);
-        socketc.emit('notify-show-messages', {users: user, client: decoded._id});
-        return res.status(200).send({message: user})
+        var listItem = JSON.parse(req.query.item);
+        var me = JSON.parse(req.query.me);
+
+        var resData = await statusImpl.getOnlineById(listItem, req, me);
+        return res.status(200).send({message: resData.message})
     })
     .get('/logout', function(req, res) {
         var token = req.body.token || req.query.token || req.headers['authorization'];

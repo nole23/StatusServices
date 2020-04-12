@@ -26,16 +26,17 @@ var io = require('socket.io')(http);
 
 io.on('connection', function (socket) {
     console.log('connected 8082:', socket.client.id);
-    socket.on('status', function (data) {
-        StatusImpl.pushOnline(data);
-    });
+    socket.on('setOnline', function(data) {
+        StatusImpl.setOnlineUser(JSON.parse(data), socket.client.id, io)
+    })
+
     socket.on('getOnline', function () {
         StatusImpl.getAllOnline();
     });
-    socket.on('typing', function (data) {
-        for (let i = 0; i < data.length; i++) {
-            io.emit('typing-' + data[i]._id, true);
-        }
+
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+        StatusImpl.removeOnline(socket.client.id, io)
     });
 });
 
