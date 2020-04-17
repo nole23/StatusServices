@@ -22,23 +22,4 @@ app.use(function (req, res, next) {
 app.use('/api/status', Status);
 
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
-
-io.on('connection', function (socket) {
-    console.log('connected 8082:', socket.client.id);
-    socket.on('setOnline', function(data) {
-        StatusImpl.setOnlineUser(JSON.parse(data), socket.client.id, io)
-    })
-
-    socket.on('getOnline', function () {
-        StatusImpl.getAllOnline();
-    });
-
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-        StatusImpl.removeOnline(socket.client.id, io)
-    });
-});
-
-app.set('socket-io', io);
 http.listen(port, () => console.log(`UserServer is start on port: ${ port }`))

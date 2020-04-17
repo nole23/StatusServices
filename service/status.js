@@ -5,9 +5,6 @@ const router = express.Router();
 
 var statusImpl = require('../serviceImpl/statusImpl.js');
 
-var ioc = require('socket.io-client');
-var socketc = ioc.connect('localhost:8084', {reconnect: true});
-
 router
     /**
      * Verify router is life
@@ -17,32 +14,14 @@ router
         var me = JSON.parse(req.query.me);
 
         var resData = await statusImpl.getOnlineById(listItem, req, me);
-        return res.status(200).send({message: resData.message})
+        return res.status(200).send({message: resData.message, socket: 'SOCKET_NULL_POINT'})
     })
-    .get('/logout', function(req, res) {
-        var token = req.body.token || req.query.token || req.headers['authorization'];
-        var data = JSON.stringify({email: 'nole0223@gmail.com', password: '123'})
-        var options = {
-            host: 'https://twoway-usersservice.herokuapp.com',
-            port: 80,
-            path: '/api/sync/',
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(data),
-              'authorization': token,
-            }
-        };
-        var httpreq = http.request(options, function (response) {
-            response.setEncoding('utf8');
-            response.on('data', function (chunk) {
-                var logout = statusImpl.logout(chunk);
-                return res.status(200).send({message: 'logout'});
-            });
-        });
-        httpreq.write(data);  
+    .post('/', function(req, res) {
+        statusImpl.setOnlineUser(req.body);
+        return res.status(200).send({message: '', socket: 'SOCKET_NULL_POINT'})
     })
-    .get('/status/profile', function(req, res) {
-        return res.status(200).send({message: 'radi'});
+    .delete('/', async function(req, res) {
+        var resDate = await statusImpl.removeOnline(req.body['client_id'])
+        return res.status(200).send({message: resDate.message, socket: 'SOCKET_NULL_POINT'})
     })
 module.exports = router;
