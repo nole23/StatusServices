@@ -7,7 +7,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-var StatusImpl = require('./serviceImpl/statusImpl.js');
 var Status = require('./service/status.js');
 
 var port = process.env.PORT || 8082;

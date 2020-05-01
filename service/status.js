@@ -1,6 +1,4 @@
 const express = require('express');
-const http = require("http");
-var jwt = require('jwt-simple');
 const router = express.Router();
 
 var statusImpl = require('../serviceImpl/statusImpl.js');
@@ -17,10 +15,14 @@ router
         return res.status(200).send({message: resData.message, socket: 'SOCKET_NULL_POINT'})
     })
     .post('/', function(req, res) {
+        console.log('ulogovao se ')
+        console.log(req.body)
         statusImpl.setOnlineUser(req.body);
         return res.status(200).send({message: '', socket: 'SOCKET_NULL_POINT'})
     })
     .delete('/', async function(req, res) {
+        console.log('izlogovao se ')
+        console.log(req.body)
         var resDate = await statusImpl.removeOnline(req.body['client_id'])
         return res.status(200).send({message: resDate.message, socket: 'SOCKET_NULL_POINT'})
     })

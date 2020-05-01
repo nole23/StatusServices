@@ -1,4 +1,3 @@
-const serviceFunction = require('../function/serviceFunction.js');
 const onlineUser = [];
 
 module.exports = {
